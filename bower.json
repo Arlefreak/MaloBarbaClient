@@ -23,5 +23,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "backbone": "~1.2.3",
+    "react": "~0.14.0"
+  }
 }
