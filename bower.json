@@ -1,0 +1,27 @@
+{
+  "name": "MaloBarbaClient",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Arlefreak/MaloBarbaClient",
+  "authors": [
+    "Arlefreak <arlefreak@gmail.com>"
+  ],
+  "description": "MaloBarba front end client",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "MaloBarba",
+    "client",
+    "frontend"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
