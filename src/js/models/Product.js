@@ -1,13 +1,14 @@
 "use strict";
 
-var $ = window.$;
+var $        = window.$;
 var Backbone = window.Backbone;
-var _ = window._; 
-Backbone.$ = $;
+var _        = window._;
+var Common   = require('../common');
+Backbone.$   = $;
 
 module.exports = Backbone.Model.extend({
   defaults: {
-    title: '',
+    title: 'test',
     completed: false
   },
 
