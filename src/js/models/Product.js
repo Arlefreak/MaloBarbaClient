@@ -1,0 +1,19 @@
+"use strict";
+
+var $ = window.$;
+var Backbone = window.Backbone;
+var _ = window._; 
+Backbone.$ = $;
+
+module.exports = Backbone.Model.extend({
+  defaults: {
+    title: '',
+    completed: false
+  },
+
+  toggle: function() {
+    this.save({
+      completed: !this.get('completed')
+    });
+  }
+});
