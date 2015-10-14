@@ -1,15 +1,15 @@
 "use strict";
 
-var $        = window.$;
+var $ = window.$;
 var Backbone = window.Backbone;
-Backbone.$   = $;
-var Common   = require('../common');
-var Product  = require('../models/Product');
+Backbone.$ = $;
+var Common = require('../common');
+var Product = require('../models/Product');
 
 var Products = Backbone.Collection.extend({
     model: Product,
-    url: Common.URL + 'product',
-
+    url: Common.URL + 'product.json',
+    
     completed: function() {
         return this.filter(function(product) {
             return product.get('completed');

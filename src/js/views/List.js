@@ -42,13 +42,17 @@ module.exports = Backbone.View.extend({
         this.listenTo(Products, 'change:completed', this.filterOne);
         this.listenTo(Products, 'filter', this.filterAll);
         this.listenTo(Products, 'all', this.render);
-        Products.fetch();
+        Products.fetch({
+            complete: function(xhr, textStatus) {
+                console.log(textStatus);
+            }
+        });
     },
 
     // New
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
-    render: function() {
+        render: function() {
         var completed = Products.completed().length;
         var remaining = Products.remaining().length;
 
@@ -102,7 +106,7 @@ module.exports = Backbone.View.extend({
     // Generate the attributes for a new Todo item.
     newAttributes: function() {
         return {
-            title: this.$input.val().trim(),
+            name: this.$input.val().trim(),
             order: Products.nextOrder(),
             completed: false
         };
