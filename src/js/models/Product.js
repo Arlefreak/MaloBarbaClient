@@ -21,7 +21,6 @@ module.exports = Backbone.Model.extend({
         date: '',
         updated: '',
         order: 0,
-        title: 'test',
         completed: false
     },
 

@@ -54,7 +54,7 @@ module.exports = new Products();
 var Common = {
     ENTER_KEY: 13,
     FILTER: "",
-    URL: 'hhtp://api.malobarba.com/api/'
+    URL: 'http://api.malobarba.com/api/'
 };
 
 module.exports = Common;
@@ -83,7 +83,6 @@ module.exports = Backbone.Model.extend({
         date: '',
         updated: '',
         order: 0,
-        title: 'test',
         completed: false
     },
 
