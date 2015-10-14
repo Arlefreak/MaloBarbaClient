@@ -4,53 +4,28 @@ var $         = window.$;
 var ListView  = require('./views/List');
 
 $(function() {
-    var products = [
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-        {name:"test1"},
-    ]
-    new ListView(products);
+    new ListView();
 });
 
 },{"./views/List":5}],2:[function(require,module,exports){
 "use strict";
 
-var $ = window.$;
+var $        = window.$;
 var Backbone = window.Backbone;
-Backbone.$ = $;
-var Common = require('../common');
-var Product = require('../models/Product');
+Backbone.$   = $;
+var Common   = require('../common');
+var Product  = require('../models/Product');
 
 var Products = Backbone.Collection.extend({
     model: Product,
-    url: Common.URL + 'product.json',
-    
-    completed: function() {
-        return this.filter(function(product) {
-            return product.get('completed');
-        });
-    },
+    url: Common.URL + 'product?status=IN',
 
-    // Filter down the list to only product items that are still not finished.
-    remaining: function() {
-        return this.without.apply(this, this.completed());
-    },
+    // inStock: function(){
+    //     return this.filter(function(product) {
+    //         return product.get('inventory');
+    //     });
+    // },
 
-    // We keep the Todos in sequential order, despite being saved by unordered
-    // GUID in the database. This generates the next order number for new items.
-    nextOrder: function() {
-        if (!this.length) {
-            return 1;
-        }
-        return this.last().get('order') + 1;
-    },
-
-    // Todos are sorted by their original insertion order.
     comparator: function(product) {
         return product.get('order');
     }
@@ -94,11 +69,11 @@ module.exports = Backbone.Model.extend({
         date: '',
         updated: '',
         order: 0,
-        completed: false
+        url: ''
     },
 
     url: function() {
-        return this.urlRoot + '/' + this.pk;
+        return this.urlRoot + this.pk;
     },
 
     fetchSuccess: function(collection, response) {
@@ -133,67 +108,48 @@ module.exports = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: '#todoapp',
-
-    // Our template for the line of statistics at the bottom of the app.
-    statsTemplate: _.template($('#stats-template').html()),
+    el: '#storeApp',
 
     // New
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-        'keypress #new-todo': 'createOnEnter',
-        'click #clear-completed': 'clearCompleted',
-        'click #toggle-all': 'toggleAllComplete'
+        // 'keypress #new-todo': 'createOnEnter',
+        // 'click #clear-completed': 'clearCompleted',
+        // 'click #toggle-all': 'toggleAllComplete'
     },
 
     // At initialization we bind to the relevant events on the `Todos`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-        this.allCheckbox = this.$('#toggle-all')[0];
-        this.$input = this.$('#new-todo');
+        // this.allCheckbox = this.$('#toggle-all')[0];
+        // this.$input = this.$('#new-todo');
         this.$footer = this.$('#footer');
-        this.$main = this.$('#main');
+        this.$main = this.$('#storeApp');
 
         this.listenTo(Products, 'add', this.addOne);
         this.listenTo(Products, 'reset', this.addAll);
 
         // New
-        this.listenTo(Products, 'change:completed', this.filterOne);
         this.listenTo(Products, 'filter', this.filterAll);
         this.listenTo(Products, 'all', this.render);
-        Products.fetch({
-            complete: function(xhr, textStatus) {
-                console.log(textStatus);
-            }
-        });
+        Products.fetch({reset:true});
     },
 
     // New
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
         render: function() {
-        var completed = Products.completed().length;
-        var remaining = Products.remaining().length;
+        var completed = 0;
+        var remaining = 0;
 
         if (Products.length) {
             this.$main.show();
             this.$footer.show();
-
-            this.$footer.html(this.statsTemplate({
-                completed: completed,
-                remaining: remaining
-            }));
-            this.$('#filters li a')
-                .removeClass('selected')
-                .filter('[href="#/' + (Common.FILTER || '') + '"]')
-                .addClass('selected');
         } else {
             this.$main.hide();
             this.$footer.hide();
         }
-
-        this.allCheckbox.checked = !remaining;
     },
 
     // Add a single todo item to the list by creating a view for it, and
@@ -202,18 +158,18 @@ module.exports = Backbone.View.extend({
         var view = new ProductView({
             model: product
         });
-        $('#todo-list').append(view.render().el);
+        $('#productList').append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-        this.$('#todo-list').html('');
+        this.$('#productList').html('');
         Products.each(this.addOne, this);
     },
 
     // New
     filterOne: function(product) {
-        product.trigger('visible');
+        // product.trigger('visible');
     },
 
     // New
@@ -227,8 +183,6 @@ module.exports = Backbone.View.extend({
     newAttributes: function() {
         return {
             name: this.$input.val().trim(),
-            order: Products.nextOrder(),
-            completed: false
         };
     },
 
@@ -239,27 +193,8 @@ module.exports = Backbone.View.extend({
         if (event.which !== Common.ENTER_KEY || !this.$input.val().trim()) {
             return;
         }
-
         Products.create(this.newAttributes());
         this.$input.val('');
-    },
-
-    // New
-    // Clear all completed product items, destroying their models.
-    clearCompleted: function() {
-        _.invoke(Products.completed(), 'destroy');
-        return false;
-    },
-
-    // New
-    toggleAllComplete: function() {
-        var completed = this.allCheckbox.checked;
-
-        Products.each(function(product) {
-            product.save({
-                'completed': completed
-            });
-        });
     }
 });
 
@@ -279,15 +214,15 @@ module.exports = Backbone.View.extend({
     tagName: 'li',
 
     // Cache the template function for a single item.
-    template: _.template($('#item-template').html()),
+    template: _.template($('#product-template').html()),
 
     // The DOM events specific to an item.
     events: {
-        'click .toggle': 'togglecompleted', // NEW
-        'dblclick label': 'edit',
-        'click .destroy': 'clear', // NEW
-        'keypress .edit': 'updateOnEnter',
-        'blur .edit': 'close'
+        // 'click .toggle': 'togglecompleted', // NEW
+        // 'dblclick label': 'edit',
+        // 'click .destroy': 'clear', // NEW
+        // 'keypress .edit': 'updateOnEnter',
+        // 'blur .edit': 'close'
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
@@ -296,16 +231,12 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         this.listenTo(this.model, 'change', this.render);
         this.listenTo(this.model, 'destroy', this.remove); // NEW
-        this.listenTo(this.model, 'visible', this.toggleVisible); // NEW
+        // this.listenTo(this.model, 'visible', this.toggleVisible); // NEW
     },
 
     // Re-render the titles of the todo item.
     render: function() {
         this.$el.html(this.template(this.model.attributes));
-
-        this.$el.toggleClass('completed', this.model.get('completed')); // NEW
-        this.toggleVisible(); // NEW
-
         this.$input = this.$('.edit');
         return this;
     },
@@ -317,43 +248,10 @@ module.exports = Backbone.View.extend({
 
     // NEW - Determines if item should be hidden
     isHidden: function() {
-        var isCompleted = this.model.get('completed');
+        var stock = this.model.get('stock');
         return ( // hidden cases only
-            (!isCompleted && Common.FILTER === 'completed') || (isCompleted && Common.FILTER === 'active')
+            (!stock && Common.FILTER === 'stock') || (stock && Common.FILTER === 'stock')
         );
-    },
-
-    // NEW - Toggle the `"completed"` state of the model.
-    togglecompleted: function() {
-        this.model.toggle();
-    },
-
-    // Switch this view into `"editing"` mode, displaying the input field.
-    edit: function() {
-        this.$el.addClass('editing');
-        this.$input.focus();
-    },
-
-    // Close the `"editing"` mode, saving changes to the todo.
-    close: function() {
-        var value = this.$input.val().trim();
-
-        if (value) {
-            this.model.save({
-                name: value
-            });
-        } else {
-            this.clear(); // NEW
-        }
-
-        this.$el.removeClass('editing');
-    },
-
-    // If you hit `enter`, we're through editing the item.
-    updateOnEnter: function(e) {
-        if (e.which === Common.ENTER_KEY) {
-            this.close();
-        }
     },
 
     // NEW - Remove the item, destroy the model from *localStorage* and delete its view.

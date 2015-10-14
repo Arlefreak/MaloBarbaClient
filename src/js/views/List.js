@@ -13,67 +13,48 @@ module.exports = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: '#todoapp',
-
-    // Our template for the line of statistics at the bottom of the app.
-    statsTemplate: _.template($('#stats-template').html()),
+    el: '#storeApp',
 
     // New
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-        'keypress #new-todo': 'createOnEnter',
-        'click #clear-completed': 'clearCompleted',
-        'click #toggle-all': 'toggleAllComplete'
+        // 'keypress #new-todo': 'createOnEnter',
+        // 'click #clear-completed': 'clearCompleted',
+        // 'click #toggle-all': 'toggleAllComplete'
     },
 
     // At initialization we bind to the relevant events on the `Todos`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
-        this.allCheckbox = this.$('#toggle-all')[0];
-        this.$input = this.$('#new-todo');
+        // this.allCheckbox = this.$('#toggle-all')[0];
+        // this.$input = this.$('#new-todo');
         this.$footer = this.$('#footer');
-        this.$main = this.$('#main');
+        this.$main = this.$('#storeApp');
 
         this.listenTo(Products, 'add', this.addOne);
         this.listenTo(Products, 'reset', this.addAll);
 
         // New
-        this.listenTo(Products, 'change:completed', this.filterOne);
         this.listenTo(Products, 'filter', this.filterAll);
         this.listenTo(Products, 'all', this.render);
-        Products.fetch({
-            complete: function(xhr, textStatus) {
-                console.log(textStatus);
-            }
-        });
+        Products.fetch({reset:true});
     },
 
     // New
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
         render: function() {
-        var completed = Products.completed().length;
-        var remaining = Products.remaining().length;
+        var completed = 0;
+        var remaining = 0;
 
         if (Products.length) {
             this.$main.show();
             this.$footer.show();
-
-            this.$footer.html(this.statsTemplate({
-                completed: completed,
-                remaining: remaining
-            }));
-            this.$('#filters li a')
-                .removeClass('selected')
-                .filter('[href="#/' + (Common.FILTER || '') + '"]')
-                .addClass('selected');
         } else {
             this.$main.hide();
             this.$footer.hide();
         }
-
-        this.allCheckbox.checked = !remaining;
     },
 
     // Add a single todo item to the list by creating a view for it, and
@@ -82,18 +63,18 @@ module.exports = Backbone.View.extend({
         var view = new ProductView({
             model: product
         });
-        $('#todo-list').append(view.render().el);
+        $('#productList').append(view.render().el);
     },
 
     // Add all items in the **Todos** collection at once.
     addAll: function() {
-        this.$('#todo-list').html('');
+        this.$('#productList').html('');
         Products.each(this.addOne, this);
     },
 
     // New
     filterOne: function(product) {
-        product.trigger('visible');
+        // product.trigger('visible');
     },
 
     // New
@@ -107,8 +88,6 @@ module.exports = Backbone.View.extend({
     newAttributes: function() {
         return {
             name: this.$input.val().trim(),
-            order: Products.nextOrder(),
-            completed: false
         };
     },
 
@@ -119,26 +98,7 @@ module.exports = Backbone.View.extend({
         if (event.which !== Common.ENTER_KEY || !this.$input.val().trim()) {
             return;
         }
-
         Products.create(this.newAttributes());
         this.$input.val('');
-    },
-
-    // New
-    // Clear all completed product items, destroying their models.
-    clearCompleted: function() {
-        _.invoke(Products.completed(), 'destroy');
-        return false;
-    },
-
-    // New
-    toggleAllComplete: function() {
-        var completed = this.allCheckbox.checked;
-
-        Products.each(function(product) {
-            product.save({
-                'completed': completed
-            });
-        });
     }
 });

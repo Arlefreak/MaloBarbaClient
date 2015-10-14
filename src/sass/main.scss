@@ -1,18 +1,13 @@
-// _reset.scss
-
-html,
-body,
-ul,
-ol {
-   margin: 0;
-  padding: 0;
+h3{
+  margin: 0 0 20px 0;
 }
 
-html{
-  margin: 0;
-  padding: 0;
+p{
+  font-family: "Roboto";
 }
 
-.hidden{
-  display:none;
+div.product img{
+  max-width: 90%;
+  display: block;
+  margin: auto;
 }

@@ -13,15 +13,15 @@ module.exports = Backbone.View.extend({
     tagName: 'li',
 
     // Cache the template function for a single item.
-    template: _.template($('#item-template').html()),
+    template: _.template($('#product-template').html()),
 
     // The DOM events specific to an item.
     events: {
-        'click .toggle': 'togglecompleted', // NEW
-        'dblclick label': 'edit',
-        'click .destroy': 'clear', // NEW
-        'keypress .edit': 'updateOnEnter',
-        'blur .edit': 'close'
+        // 'click .toggle': 'togglecompleted', // NEW
+        // 'dblclick label': 'edit',
+        // 'click .destroy': 'clear', // NEW
+        // 'keypress .edit': 'updateOnEnter',
+        // 'blur .edit': 'close'
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
@@ -30,16 +30,12 @@ module.exports = Backbone.View.extend({
     initialize: function() {
         this.listenTo(this.model, 'change', this.render);
         this.listenTo(this.model, 'destroy', this.remove); // NEW
-        this.listenTo(this.model, 'visible', this.toggleVisible); // NEW
+        // this.listenTo(this.model, 'visible', this.toggleVisible); // NEW
     },
 
     // Re-render the titles of the todo item.
     render: function() {
         this.$el.html(this.template(this.model.attributes));
-
-        this.$el.toggleClass('completed', this.model.get('completed')); // NEW
-        this.toggleVisible(); // NEW
-
         this.$input = this.$('.edit');
         return this;
     },
@@ -51,43 +47,10 @@ module.exports = Backbone.View.extend({
 
     // NEW - Determines if item should be hidden
     isHidden: function() {
-        var isCompleted = this.model.get('completed');
+        var stock = this.model.get('stock');
         return ( // hidden cases only
-            (!isCompleted && Common.FILTER === 'completed') || (isCompleted && Common.FILTER === 'active')
+            (!stock && Common.FILTER === 'stock') || (stock && Common.FILTER === 'stock')
         );
-    },
-
-    // NEW - Toggle the `"completed"` state of the model.
-    togglecompleted: function() {
-        this.model.toggle();
-    },
-
-    // Switch this view into `"editing"` mode, displaying the input field.
-    edit: function() {
-        this.$el.addClass('editing');
-        this.$input.focus();
-    },
-
-    // Close the `"editing"` mode, saving changes to the todo.
-    close: function() {
-        var value = this.$input.val().trim();
-
-        if (value) {
-            this.model.save({
-                name: value
-            });
-        } else {
-            this.clear(); // NEW
-        }
-
-        this.$el.removeClass('editing');
-    },
-
-    // If you hit `enter`, we're through editing the item.
-    updateOnEnter: function(e) {
-        if (e.which === Common.ENTER_KEY) {
-            this.close();
-        }
     },
 
     // NEW - Remove the item, destroy the model from *localStorage* and delete its view.

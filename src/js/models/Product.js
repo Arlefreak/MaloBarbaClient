@@ -22,11 +22,11 @@ module.exports = Backbone.Model.extend({
         date: '',
         updated: '',
         order: 0,
-        completed: false
+        url: ''
     },
 
     url: function() {
-        return this.urlRoot + '/' + this.pk;
+        return this.urlRoot + this.pk;
     },
 
     fetchSuccess: function(collection, response) {
