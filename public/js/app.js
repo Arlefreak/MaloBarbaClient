@@ -4,22 +4,32 @@ var $         = window.$;
 var ListView  = require('./views/List');
 
 $(function() {
-    var lv = new ListView();
+    var products = [
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+        {name:"test1"},
+    ]
+    new ListView(products);
 });
 
 },{"./views/List":5}],2:[function(require,module,exports){
 "use strict";
 
-var $        = window.$;
+var $ = window.$;
 var Backbone = window.Backbone;
-Backbone.$   = $;
-var Common   = require('../common');
-var Product  = require('../models/Product');
+Backbone.$ = $;
+var Common = require('../common');
+var Product = require('../models/Product');
 
 var Products = Backbone.Collection.extend({
     model: Product,
-    url: Common.URL + 'product',
-
+    url: Common.URL + 'product.json',
+    
     completed: function() {
         return this.filter(function(product) {
             return product.get('completed');
@@ -68,6 +78,7 @@ var Common = require('../common.js');
 Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
+    urlRoot: Common.URL,
     defaults: {
         pk: -1,
         sku: '',
@@ -75,7 +86,7 @@ module.exports = Backbone.Model.extend({
         image: '',
         description: '',
         price: 0,
-        discount:0,
+        discount: 0,
         inventory: 0,
         status: '',
         tags: [],
@@ -84,6 +95,19 @@ module.exports = Backbone.Model.extend({
         updated: '',
         order: 0,
         completed: false
+    },
+
+    url: function() {
+        return this.urlRoot + '/' + this.pk;
+    },
+
+    fetchSuccess: function(collection, response) {
+        console.log('Collection fetch success', response);
+        console.log('Collection models: ', collection.models);
+    },
+
+    fetchError: function(collection, response) {
+        throw new Error("Books fetch error");
     },
 
     toggle: function() {
@@ -138,13 +162,17 @@ module.exports = Backbone.View.extend({
         this.listenTo(Products, 'change:completed', this.filterOne);
         this.listenTo(Products, 'filter', this.filterAll);
         this.listenTo(Products, 'all', this.render);
-        Products.fetch();
+        Products.fetch({
+            complete: function(xhr, textStatus) {
+                console.log(textStatus);
+            }
+        });
     },
 
     // New
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
-    render: function() {
+        render: function() {
         var completed = Products.completed().length;
         var remaining = Products.remaining().length;
 
@@ -198,7 +226,7 @@ module.exports = Backbone.View.extend({
     // Generate the attributes for a new Todo item.
     newAttributes: function() {
         return {
-            title: this.$input.val().trim(),
+            name: this.$input.val().trim(),
             order: Products.nextOrder(),
             completed: false
         };
@@ -244,7 +272,6 @@ var _        = window._;
 Backbone.$   = $;
 
 var Common   = require('../common.js');
-var Products = require('../collections/Products');
 
 module.exports = Backbone.View.extend({
 
@@ -313,7 +340,7 @@ module.exports = Backbone.View.extend({
 
         if (value) {
             this.model.save({
-                title: value
+                name: value
             });
         } else {
             this.clear(); // NEW
@@ -335,7 +362,7 @@ module.exports = Backbone.View.extend({
     }
 });
 
-},{"../collections/Products":2,"../common.js":3}]},{},[1])
+},{"../common.js":3}]},{},[1])
 
 
 //# sourceMappingURL=app.js.map

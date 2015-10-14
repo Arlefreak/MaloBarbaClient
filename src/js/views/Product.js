@@ -6,7 +6,6 @@ var _        = window._;
 Backbone.$   = $;
 
 var Common   = require('../common.js');
-var Products = require('../collections/Products');
 
 module.exports = Backbone.View.extend({
 
@@ -75,7 +74,7 @@ module.exports = Backbone.View.extend({
 
         if (value) {
             this.model.save({
-                title: value
+                name: value
             });
         } else {
             this.clear(); // NEW
