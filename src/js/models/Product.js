@@ -1,20 +1,33 @@
 "use strict";
 
-var $        = window.$;
+var $ = window.$;
 var Backbone = window.Backbone;
-var _        = window._;
-var Common   = require('../common');
-Backbone.$   = $;
+var Common = require('../common.js');
+Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
-  defaults: {
-    title: 'test',
-    completed: false
-  },
+    defaults: {
+        pk: -1,
+        sku: '',
+        name: '',
+        image: '',
+        description: '',
+        price: 0,
+        discount:0,
+        inventory: 0,
+        status: '',
+        tags: [],
+        category: '',
+        date: '',
+        updated: '',
+        order: 0,
+        title: 'test',
+        completed: false
+    },
 
-  toggle: function() {
-    this.save({
-      completed: !this.get('completed')
-    });
-  }
+    toggle: function() {
+        this.save({
+            completed: !this.get('completed')
+        });
+    }
 });

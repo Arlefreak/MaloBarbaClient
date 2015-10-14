@@ -2,26 +2,23 @@
 'use strict';
 var $         = window.$;
 var ListView  = require('./views/List');
-var Router    = require('./routers/Router');
-var Common    = require('./common');
 
 $(function() {
-    new ListView();
+    var lv = new ListView();
 });
 
-},{"./common":3,"./routers/Router":5,"./views/List":6}],2:[function(require,module,exports){
+},{"./views/List":5}],2:[function(require,module,exports){
 "use strict";
 
 var $        = window.$;
 var Backbone = window.Backbone;
-var _        = window._;
 Backbone.$   = $;
 var Common   = require('../common');
 var Product  = require('../models/Product');
 
 var Products = Backbone.Collection.extend({
     model: Product,
-    localStorage: new Backbone.LocalStorage('todos-backbone'),
+    url: Common.URL + 'product',
 
     completed: function() {
         return this.filter(function(product) {
@@ -52,71 +49,52 @@ var Products = Backbone.Collection.extend({
 module.exports = new Products();
 
 },{"../common":3,"../models/Product":4}],3:[function(require,module,exports){
-'use strict';
+"use strict";
 
 var Common = {
     ENTER_KEY: 13,
-    FILTER: ""
-}
+    FILTER: "",
+    URL: 'hhtp://api.malobarba.com/api/'
+};
 
 module.exports = Common;
 
 },{}],4:[function(require,module,exports){
 "use strict";
 
-var $        = window.$;
+var $ = window.$;
 var Backbone = window.Backbone;
-var _        = window._;
-var Common   = require('../common');
-Backbone.$   = $;
+var Common = require('../common.js');
+Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
-  defaults: {
-    title: 'test',
-    completed: false
-  },
-
-  toggle: function() {
-    this.save({
-      completed: !this.get('completed')
-    });
-  }
-});
-
-},{"../common":3}],5:[function(require,module,exports){
-"use strict";
-
-var $           = window.$;
-var Backbone    = window.Backbone;
-var _           = window._;
-Backbone.$      = $;
-
-var Common      = require('../common');
-var Products    = require('../collections/Products');
-
-var ProductRouter = Backbone.Router.extend({
-    routes:{
-        '*filter': 'setFilter'
+    defaults: {
+        pk: -1,
+        sku: '',
+        name: '',
+        image: '',
+        description: '',
+        price: 0,
+        discount:0,
+        inventory: 0,
+        status: '',
+        tags: [],
+        category: '',
+        date: '',
+        updated: '',
+        order: 0,
+        title: 'test',
+        completed: false
     },
 
-    setFilter: function( param ) {
-        // Set the current filter to be used
-        if (param) {
-            param = param.trim();
-        }
-        Common.FILTER = param || '';
-        console.log(param);
-
-        // Trigger a collection filter event, causing hiding/unhiding
-        // of Todo view items
-        Products.trigger('filter');
+    toggle: function() {
+        this.save({
+            completed: !this.get('completed')
+        });
     }
 });
 
-module.exports = new ProductRouter();
-Backbone.history.start();
-
-},{"../collections/Products":2,"../common":3}],6:[function(require,module,exports){
+},{"../common.js":3}],5:[function(require,module,exports){
 "use strict";
 
 var $ = window.$;
@@ -258,7 +236,7 @@ module.exports = Backbone.View.extend({
     }
 });
 
-},{"../collections/Products":2,"../common":3,"./Product.js":7}],7:[function(require,module,exports){
+},{"../collections/Products":2,"../common":3,"./Product.js":6}],6:[function(require,module,exports){
 "use strict";
 
 var $        = window.$;

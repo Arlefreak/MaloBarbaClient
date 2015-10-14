@@ -2,14 +2,13 @@
 
 var $        = window.$;
 var Backbone = window.Backbone;
-var _        = window._;
 Backbone.$   = $;
 var Common   = require('../common');
 var Product  = require('../models/Product');
 
 var Products = Backbone.Collection.extend({
     model: Product,
-    localStorage: new Backbone.LocalStorage('todos-backbone'),
+    url: Common.URL + 'product',
 
     completed: function() {
         return this.filter(function(product) {

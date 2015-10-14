@@ -5,12 +5,11 @@ var mbf        = require('main-bower-files');
 var concat     = require('gulp-concat');
 var jshint     = require('gulp-jshint');
 var sass       = require('gulp-sass');
-var livereload = require('gulp-livereload');
 var connect    = require('gulp-connect');
+var cors       = require('cors');
 var browserify = require('browserify');
 var source     = require('vinyl-source-stream');
 var buffer     = require('vinyl-buffer');
-var uglify     = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil      = require('gulp-util');
 
@@ -39,7 +38,8 @@ gulp.task('browserify', function() {
         }))
         .on('error', gutil.log)
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./public/js/'));
+        .pipe(gulp.dest('./public/js/'))
+        .pipe(connect.reload());
 });
 
 gulp.task('jshint', function() {
@@ -68,7 +68,9 @@ gulp.task('sass:watch', function() {
 gulp.task('connect', function() {
     connect.server({
         root: 'public',
-        livereload: true
+        middleware: function(){
+            return [cors()];
+        }
     });
 });
 
