@@ -1,0 +1,151 @@
+@import 'nib'
+@import "lib/*"
+
+global-reset()
+
+html
+body
+    margin 0
+    padding 0
+    color $color1
+    font-family $font
+    .wrapper
+        width 100%
+        margin auto
+        position relative
+        text-align center
+    .logo
+        height 85vh
+        background #333333
+        background url('../img/fondo.jpg')
+        background-attachment fixed
+        background-size cover
+        background-position center center
+        img
+            height auto
+            width 70%
+            max-width 550px
+            display block
+            margin auto
+            position absolute
+            top 50%
+            left 50%
+            transform translate(-50%, -50%)
+            @media screen and (min-width: 640px)
+                width auto
+                height 50vh
+    h1
+    h2
+    h3
+    h4
+    h5
+        //font-family $font2
+        font-size 1.5em
+        text-align center
+    h2
+        vertical-align middle
+        margin 0px auto 50px auto
+        @media screen and (min-width: 640px)
+            font-size 3.0em
+    h2:first-child
+        height 15vh
+        line-height 15vh
+        margin 0
+    h3
+        margin 0 0 20px 0
+    p
+        width 80%
+        max-width 700px
+        margin 0px auto 50px auto
+        letter-spacing 0.1em
+        line-height 1.0em
+        text-align justify
+        hyphens auto
+        font-family $font3
+        @media screen and (min-width: 640px)
+            width 50%
+    a.button
+        color $color1
+        text-decoration none
+        margin 0px auto 50px auto
+        text-align center
+        display inline-block
+        padding 15px
+        border 2px solid $color1
+        width auto
+        transition background 0.5s ease
+        &:hover
+            background $color1
+            color $color2
+    .fb_iframe_widget
+        position absolute
+        bottom 3vh
+        right 0
+        left 0
+    #instafeed
+        display block
+        width 100%
+        max-width 712px
+        height auto
+        margin 0 auto 30px auto
+        overflow hidden
+        @media screen and (min-width: 640px)
+            width 50%
+        a
+            display inline-block
+            width 80%
+            height auto
+            overflow hidden
+            margin 0 auto 25px auto
+            position relative
+            @media screen and (min-width: 640px)
+                margin 0 1% 2% 1%
+                width 31%
+            &:hover
+                div
+                    opacity 1
+            div
+                position absolute
+                left 0
+                right 0
+                bottom 0
+                background rgba(0,0,0,0.5)
+                width 100%
+                height 20%
+                overflow hidden
+                opacity 0
+                transition opacity 0.5s ease
+                font-family sans-serif
+                &:hover
+                    opacity 1
+            span
+                font-family $font3
+                font-weight 400
+                position absolute
+                left 50%
+                top 50%
+                width 80%
+                color white
+                font-size 0.6em
+                transform translate(-50%,-54%)
+                line-height 3.8em
+            img
+                display block
+                width 100%
+                height auto
+                position inherit
+            .svg-icon
+                position absolute
+                left 50%
+                top 50%
+                transform translate(-50%,-50%)
+.svg-icon
+    width 2em
+    height 2em
+    path
+    polygon
+    rect
+        fill $color2
+    circle
+        stroke #4691f6
+        stroke-width 0.5
