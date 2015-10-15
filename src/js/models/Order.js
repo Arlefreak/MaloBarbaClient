@@ -6,26 +6,24 @@ var Common = require('../common.js');
 Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
-    urlRoot: Common.URL + 'product',
+    urlRoot: Common.URL + 'order',
     defaults: {
-        pk: -1,
+        pk: 0,
         sku: '',
-        name: '',
-        image: '',
-        description: '',
-        price: 0,
-        discount: 0,
-        inventory: 0,
-        status: '',
-        tags: [],
-        category: '',
+        client: 0,
+        shippingAdress: 0,
+        billingAdress: 0,
+        items_subTotal: 0.0,
+        shipping_cost: 0.0,
+        total: 0.0,
+        shipping_carrier: '',
+        shipping_tracking: '',
         date: '',
         updated: '',
-        order: 0,
-        url: ''
+        status: ''
     },
 
     url: function() {
         return this.urlRoot + '/' + this.pk;
-    },
+    }
 });

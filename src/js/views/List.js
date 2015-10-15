@@ -2,7 +2,6 @@
 
 var $ = window.$;
 var Backbone = window.Backbone;
-var _ = window._;
 Backbone.$ = $;
 
 var Common = require('../common');
@@ -45,8 +44,6 @@ module.exports = Backbone.View.extend({
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
         render: function() {
-        var completed = 0;
-        var remaining = 0;
 
         if (Products.length) {
             this.$main.show();

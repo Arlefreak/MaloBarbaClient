@@ -53,7 +53,7 @@ var Common = require('../common.js');
 Backbone.$ = $;
 
 module.exports = Backbone.Model.extend({
-    urlRoot: Common.URL,
+    urlRoot: Common.URL + 'product',
     defaults: {
         pk: -1,
         sku: '',
@@ -73,23 +73,8 @@ module.exports = Backbone.Model.extend({
     },
 
     url: function() {
-        return this.urlRoot + this.pk;
+        return this.urlRoot + '/' + this.pk;
     },
-
-    fetchSuccess: function(collection, response) {
-        console.log('Collection fetch success', response);
-        console.log('Collection models: ', collection.models);
-    },
-
-    fetchError: function(collection, response) {
-        throw new Error("Books fetch error");
-    },
-
-    toggle: function() {
-        this.save({
-            completed: !this.get('completed')
-        });
-    }
 });
 
 },{"../common.js":3}],5:[function(require,module,exports){
@@ -97,7 +82,6 @@ module.exports = Backbone.Model.extend({
 
 var $ = window.$;
 var Backbone = window.Backbone;
-var _ = window._;
 Backbone.$ = $;
 
 var Common = require('../common');
@@ -140,8 +124,6 @@ module.exports = Backbone.View.extend({
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
         render: function() {
-        var completed = 0;
-        var remaining = 0;
 
         if (Products.length) {
             this.$main.show();
