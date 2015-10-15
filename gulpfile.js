@@ -4,7 +4,8 @@ var gulp       = require('gulp');
 var mbf        = require('main-bower-files');
 var concat     = require('gulp-concat');
 var jshint     = require('gulp-jshint');
-var sass       = require('gulp-sass');
+var stylus     = require('gulp-stylus');
+var nib        = require('nib');
 var connect    = require('gulp-connect');
 var cors       = require('cors');
 var browserify = require('browserify');
@@ -51,18 +52,11 @@ gulp.task('jshint', function() {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('sass', function() {
-    gulp.src('src/sass/main.scss')
-        .pipe(sass({
-            outputStyle: process.env.NODE_ENV === 'development' ? 'expanded' : 'compressed'
-        }))
-        .pipe(sass().on('error', sass.logError))
+gulp.task('stylus', function() {
+    gulp.src('src/css/main.styl')
+        .pipe(stylus({use:nib(), import:['nib']}))
         .pipe(gulp.dest('public/css/'))
         .pipe(connect.reload());
-});
-
-gulp.task('sass:watch', function() {
-    gulp.watch('src/sass/**/*.scss', ['sass']);
 });
 
 gulp.task('connect', function() {
@@ -80,9 +74,9 @@ gulp.task('html', function() {
         .pipe(connect.reload());
 });
 
-gulp.task('watch', ['browserify', 'sass', 'connect'], function() {
+gulp.task('watch', ['browserify', 'stylus', 'connect'], function() {
     gulp.watch('src/js/**/*.js', ['browserify']);
-    gulp.watch('src/sass/**/*.scss', ['sass']);
+    gulp.watch('src/css/**/*.styl', ['stylus']);
     gulp.watch('public/*.html', ['html']);
     // livereload.listen();
     // gulp.watch('public/**').on('change', livereload.changed);
