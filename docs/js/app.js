@@ -244,5 +244,4 @@ module.exports = Backbone.View.extend({
 
 },{"../common.js":3}]},{},[1])
 
-
 //# sourceMappingURL=app.js.map
